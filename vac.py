@@ -71,7 +71,7 @@ class Simulate():
             self.state_list[agent.state].append(agent.index)
 
         self.update()
-        self.init_vaccinating()
+        total_vaccine_cost=self.init_vaccinating()
 
     def update(self):
         for state in self.state_history.keys():
@@ -80,12 +80,16 @@ class Simulate():
 
     def init_vaccinating(self):
         self.vaccinating_policy = Vaccination_policy.Vaccination_policy(lambda x:self.num_agents_per_step)
+        x=0
         for vaccine in self.available_vaccines.keys():
-            self.vaccinating_policy.add_vaccination(vaccine,self.available_vaccines[vaccine]['cost'],
+            x=self.vaccinating_policy.add_vaccination(vaccine,self.available_vaccines[vaccine]['cost'],
                                                     self.available_vaccines[vaccine]['decay_days'],self.available_vaccines[vaccine]['efficacy'],
                                                     self.available_vaccines[vaccine]['capacity'])
-            cost=self.vaccinating_policy.check_count()
-        return cost
+            x+=x
+
+        return x
+        #     cost=self.vaccinating_policy.check_count()
+        # return cost
 
     def simulate_days(self,days):
         for day in range(days):
@@ -104,7 +108,9 @@ class Simulate():
 
 
     def enact_policy(self,day):
-        self.vaccinating_policy.enact_policy(day,self.agents)
+        total_cost=self.vaccinating_policy.enact_policy(day,self.agents)
+
+        return total_cost
 
     def spread(self,day):
         #Inf : Sus ->2bExp
@@ -187,6 +193,7 @@ def world(n,p,inf_per,days,graph_obj,beta,mu,gamma,delta,num_agents_per_step,ava
 
     sim_obj=Simulate(graph_obj,agents,transmission_prob,num_agents_per_step,available_vaccines)
     sim_obj.simulate_days(days)
+    # sim_obj.
     return sim_obj.state_history
 
 def average(tdict,number):
@@ -210,6 +217,7 @@ def worlds(number,n,p,inf_per,days,beta,mu,gamma,delta,num_agents_per_step,avail
 
     for i in range(number):
         graph_obj = RandomGraph(n,p,True)
+        # sim_obj2=
         # sdict = world(n,p,inf_per,days,graph_obj,beta,mu,gamma,delta,lockdown_list)
         sdict = world(n,p,inf_per,days,graph_obj,beta,mu,gamma,delta,num_agents_per_step,available_vaccines)
 
@@ -241,9 +249,12 @@ def worlds(number,n,p,inf_per,days,beta,mu,gamma,delta,num_agents_per_step,avail
     return cum_inf
 
 def main():
+    random.seed(0)
     st.write("""
     # Vaccination Policy
-    Experimenting with SEIRS model on a G(n,p) random graph.
+    A vaccination policy in Episimmer is a user defined intervention policy being able to cater to various vaccination strategies.
+    We have designed this application as a simple point solution to Vaccination policy template of the main simulator - [Episimmer](https://github.com/healthbadge/episimmer).
+    We are experimenting with SEIRS model on a G(n,p) random graph.
     Use sidebar to vary parameters
     """)
     st.write("------------------------------------------------------------------------------------")
@@ -269,6 +280,7 @@ def main():
     num_agents_per_step=st.sidebar.slider("Number of Agents to vaccinate every day", min_value=0 , max_value=1000 , value=100 , step=10 , format=None , key=None )
     num_vaccine_types=st.sidebar.slider("Number of distinct vaccines", min_value=0 , max_value=10 , value=1 , step=1 , format=None , key=None)
 
+    tc=0
     for i in range(num_vaccine_types):
         available_vaccines['Vaccine'+str(i+1)] = {}
         st.sidebar.text("Vaccine Type {0}".format(i+1))
@@ -280,6 +292,12 @@ def main():
         available_vaccines['Vaccine'+str(i+1)]['decay_days'] = decay
         available_vaccines['Vaccine'+str(i+1)]['efficacy'] = efficacy
         available_vaccines['Vaccine'+str(i+1)]['capacity'] = quantity
+        # tc=tc+
+    for vaccine in available_vaccines:
+        tc=tc+ available_vaccines[vaccine]['cost']
+
+
+
     st.sidebar.write("------------------------------------------------------------------------------------")
 
     st.sidebar.write("Disease parameters")
@@ -302,6 +320,9 @@ def main():
     #         lockdown_list[i-1]=True
     # cum_inf, cum_ld = worlds(num_worlds,n,p,inf_per,days,beta,mu,gamma,delta,num_agents_per_step,available_vaccines)
     cum_inf= worlds(num_worlds,n,p,inf_per,days,beta,mu,gamma,delta,num_agents_per_step,available_vaccines)
+    # new_sim_obj= Simulate(graph_obj,agents,transmission_prob,num_agents_per_step,available_vaccines)
+    # total_vaccination_cost=new_sim_obj.enact_policy(day)
+    # total_cost=
 
     st.write("------------------------------------------------------------------------------------")
 
@@ -318,7 +339,11 @@ def main():
 
     # st.write("The Cumulative cost is "+str(a*cum_inf+b*cum_ld))
     # st.write("The Cumulative cost is "+str(a*cum_inf*cost))
+    # cost=
+    st.write("The total Medical cost per day is "+str(a*cum_inf))
+    st.write("The total vaccination cost per day is "+str(tc))
     st.write("The Cumulative cost is "+str(a*cum_inf+cost))
+
 
 
 main()
