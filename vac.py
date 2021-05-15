@@ -80,14 +80,14 @@ class Simulate():
 
     def init_vaccinating(self):
         self.vaccinating_policy = Vaccination_policy.Vaccination_policy(lambda x:self.num_agents_per_step)
-        x=0
+        # x=0
         for vaccine in self.available_vaccines.keys():
-            x=self.vaccinating_policy.add_vaccination(vaccine,self.available_vaccines[vaccine]['cost'],
+            self.vaccinating_policy.add_vaccination(vaccine,self.available_vaccines[vaccine]['cost'],
                                                     self.available_vaccines[vaccine]['decay_days'],self.available_vaccines[vaccine]['efficacy'],
                                                     self.available_vaccines[vaccine]['capacity'])
-            x+=x
-
-        return x
+        #     x+=x
+        #
+        # return x
         #     cost=self.vaccinating_policy.check_count()
         # return cost
 
