@@ -294,7 +294,7 @@ def main():
         available_vaccines['Vaccine'+str(i+1)]['capacity'] = quantity
         # tc=tc+
     for vaccine in available_vaccines:
-        tc=tc+ available_vaccines[vaccine]['cost']
+        tc=tc+ available_vaccines[vaccine]['cost']* available_vaccines[vaccine]['capacity']
 
 
 
@@ -341,7 +341,7 @@ def main():
     # st.write("The Cumulative cost is "+str(a*cum_inf*cost))
     # cost=
     st.write("The total Medical cost per day is "+str(a*cum_inf))
-    st.write("The total vaccination cost per day is "+str(tc))
+    st.write("The total vaccination cost is "+str(tc))
     st.write("The Cumulative cost is "+str(a*cum_inf+cost))
 
 
