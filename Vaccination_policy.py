@@ -52,11 +52,12 @@ class Vaccination_policy():
         self.statistics_total['Total Unsuccessful']=[]
         assert callable(agents_per_step_fn)
         self.agents_per_step_fn = agents_per_step_fn
+        self.total_cost1=0
 
 
     def enact_policy(self,time_step,agents):
 
-        self.newday(time_step)
+        full_cost=self.newday(time_step)
         self.set_protection(agents)
         fn=self.full_random_vaccines()
         fn(agents,time_step)
@@ -64,12 +65,17 @@ class Vaccination_policy():
         self.restrict_agents(agents)
         self.get_stats()
 
+        return full_cost
+
+
+
 
     def newday(self,time_step):
 
         self.vaccines=[]
         self.results=[]
         self.num_agents_to_vaccinate = self.agents_per_step_fn(time_step)
+        # self.total_cost=0
 
         for name in self.available_vaccines.keys():
 
@@ -78,12 +84,18 @@ class Vaccination_policy():
                 vaccine_obj=Vaccine_type(name,cost,decay,efficacy)
                 self.vaccines.append(vaccine_obj)
 
-    def check_count(self):
-        self.total_cost=0
-        for vaccine_name in self.available_vaccines.keys():
-            self.total_cost=self.total_cost+self.available_vaccines[vaccine_name]['parameters'][1]*self.available_vaccines[vaccine_name]['number']
+        # for vaccine_name in self.available_vaccines.keys():
+        #     self.total_cost=self.total_cost+self.available_vaccines[vaccine_name]['parameters'][1]*self.available_vaccines[vaccine_name]['number']
+        #
+        # return self.total_cost
 
-        return self.total_cost
+    #
+    # def check_count(self):
+    #     self.total_cost=0
+    #     for vaccine_name in self.available_vaccines.keys():
+    #         self.total_cost=self.total_cost+self.available_vaccines[vaccine_name]['parameters'][1]*self.available_vaccines[vaccine_name]['number']
+    #
+    #     return self.total_cost
 
 
 
@@ -184,3 +196,8 @@ class Vaccination_policy():
         else:
             self.available_vaccines[name]={'parameters':[name,cost,decay,efficacy],'number':num}
             self.statistics[name]={'Total Vaccination':[],'Total Successful':[],'Total Unsuccessful':[]}
+
+        for vaccine_name in self.available_vaccines.keys():
+            self.total_cost1=self.total_cost1+self.available_vaccines[vaccine_name]['parameters'][1]*self.available_vaccines[vaccine_name]['number']
+
+        return self.total_cost1
