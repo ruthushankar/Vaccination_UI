@@ -71,7 +71,8 @@ class Simulate():
             self.state_list[agent.state].append(agent.index)
 
         self.update()
-        total_vaccine_cost=self.init_vaccinating()
+        # total_vaccine_cost=self.init_vaccinating()
+        self.init_vaccinating()
 
     def update(self):
         for state in self.state_history.keys():
@@ -95,6 +96,7 @@ class Simulate():
         self.cost_over_days=0
         for day in range(days):
 
+            # self.cost_over_days+=self.simulate_day(day)
             self.cost_over_days+=self.simulate_day(day)
 
         return self.cost_over_days
@@ -220,6 +222,7 @@ def worlds(number,n,p,inf_per,days,beta,mu,gamma,delta,num_agents_per_step,avail
     # cum_ld=0
     individual_types=['Susceptible','Exposed','Infected','Recovered']
     tdict={}
+    total_vaccine_cost=0
 
     for state in individual_types:
         tdict[state]=[0]*(days+1)
@@ -229,12 +232,14 @@ def worlds(number,n,p,inf_per,days,beta,mu,gamma,delta,num_agents_per_step,avail
         # sim_obj2=
         # sdict = world(n,p,inf_per,days,graph_obj,beta,mu,gamma,delta,lockdown_list)
         sdict,final_cost1 = world(n,p,inf_per,days,graph_obj,beta,mu,gamma,delta,num_agents_per_step,available_vaccines)
+        total_vaccine_cost+=final_cost1
 
         for state in individual_types:
             for j in range(len(tdict[state])):
                 tdict[state][j]+=sdict[state][j]
 
     tdict=average(tdict,number)
+    total_vaccine_cost/=number
     values=[]
     keys=individual_types
 
@@ -251,11 +256,8 @@ def worlds(number,n,p,inf_per,days,beta,mu,gamma,delta,num_agents_per_step,avail
     for i in range(days):
         cum_inf+=tdict['Infected'][i+1]
 
-    # for i in lockdown_list:
-    #     if i:
-    #         cum_ld+=n
-
-    return cum_inf,final_cost1
+    # return cum_inf,final_cost1
+    return cum_inf,total_vaccine_cost
 
 def main():
     random.seed(0)
@@ -289,7 +291,7 @@ def main():
     num_agents_per_step=st.sidebar.slider("Number of Agents to vaccinate every day", min_value=0 , max_value=1000 , value=100 , step=10 , format=None , key=None )
     num_vaccine_types=st.sidebar.slider("Number of distinct vaccines", min_value=0 , max_value=10 , value=1 , step=1 , format=None , key=None)
 
-    tc=0
+    # tc=0
     for i in range(num_vaccine_types):
         available_vaccines['Vaccine'+str(i+1)] = {}
         st.sidebar.text("Vaccine Type {0}".format(i+1))
@@ -343,7 +345,7 @@ def main():
 
     st.write("------------------------------------------------------------------------------------")
 
-    a=st.slider("Medical cost per infected per day", min_value=1 , max_value=100 , value=5 , step=1 , format=None , key=None )
+    a=st.slider("Medical cost per infected per day", min_value=0 , max_value=100 , value=5 , step=1 , format=None , key=None )
     # b=st.slider("Economic loss during lockdown per individual per day", min_value=1 , max_value=100 , value=1 , step=1 , format=None , key=None )
 
     # st.write("The Cumulative cost is "+str(a*cum_inf+b*cum_ld))
