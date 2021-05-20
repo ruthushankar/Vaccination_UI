@@ -19,6 +19,7 @@ class Vaccine_type():
         self.vaccine_cost=cost
         self.decay_days=decay
         self.efficacy=efficacy
+        self.total=0
 
 
     def vaccinate(self,agent,time_step):
@@ -57,7 +58,7 @@ class Vaccination_policy():
 
     def enact_policy(self,time_step,agents):
 
-        self.total_cost=self.newday(time_step)
+        self.total_cost1=self.newday(time_step)
         self.set_protection(agents)
         fn=self.full_random_vaccines()
         fn(agents,time_step)
@@ -65,7 +66,7 @@ class Vaccination_policy():
         self.restrict_agents(agents)
         self.get_stats()
 
-        return self.total_cost
+        return self.total_cost1
 
 
 
@@ -82,7 +83,8 @@ class Vaccination_policy():
             for i in range(int(self.available_vaccines[name]['number'])):
                 name,cost,decay,efficacy=self.available_vaccines[name]['parameters']
                 vaccine_obj=Vaccine_type(name,cost,decay,efficacy)
-                self.total_cost+=(vaccine_obj.vaccine_cost* self.available_vaccines[name]['number'])
+                # self.total_cost+=(vaccine_obj.vaccine_cost* self.available_vaccines[name]['number'])
+                self.total_cost=(vaccine_obj.vaccine_cost* self.available_vaccines[name]['number'])
                 self.vaccines.append(vaccine_obj)
 
         return self.total_cost
