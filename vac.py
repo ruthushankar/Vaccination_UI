@@ -351,7 +351,7 @@ def main():
     # cost=
     st.write("The total Medical cost per day is "+str(a*cum_inf))
     st.write("The total vaccination cost is "+str(final_cost1))
-    st.write("The Cumulative cost is "+str(a*cum_inf+final_cost))
+    st.write("The Cumulative cost is "+str(a*cum_inf+final_cost1))
 
 
 
