@@ -76,7 +76,7 @@ class Vaccination_policy():
         self.vaccines=[]
         self.results=[]
         self.num_agents_to_vaccinate = self.agents_per_step_fn(time_step)
-        # self.total_cost=0
+        self.cumulative_cost=0
 
         for name in self.available_vaccines.keys():
 
@@ -86,8 +86,10 @@ class Vaccination_policy():
                 # self.total_cost+=(vaccine_obj.vaccine_cost* self.available_vaccines[name]['number'])
                 self.total_cost=(vaccine_obj.vaccine_cost* self.available_vaccines[name]['number'])
                 self.vaccines.append(vaccine_obj)
+                self.cumulative_cost+=self.total_cost
 
-        return self.total_cost
+        # return self.total_cost
+        return self.cumulative_cost
 
         # for vaccine_name in self.available_vaccines.keys():
         #     self.total_cost=self.total_cost+self.available_vaccines[vaccine_name]['parameters'][1]*self.available_vaccines[vaccine_name]['number']
