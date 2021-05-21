@@ -21,7 +21,7 @@ class Vaccine_type():
         self.decay_days=decay
         self.efficacy=efficacy
         self.total=0
-        self.cost_fin=0
+
 
 
     def vaccinate(self,agent,time_step):
@@ -30,7 +30,7 @@ class Vaccine_type():
 
         result=self.inject_agent(agent)
         result_obj= Result(self.vaccine_name,agent,result,time_step,self.efficacy,self.decay_days,self.vaccine_cost)
-        # cost_fin+=result_obj.vaccine_cost
+
 
 
         return result_obj
@@ -207,8 +207,3 @@ class Vaccination_policy():
         else:
             self.available_vaccines[name]={'parameters':[name,cost,decay,efficacy],'number':num}
             self.statistics[name]={'Total Vaccination':[],'Total Successful':[],'Total Unsuccessful':[]}
-
-        # for vaccine_name in self.available_vaccines.keys():
-        #     self.total_cost1=self.total_cost1+self.available_vaccines[vaccine_name]['parameters'][1]*self.available_vaccines[vaccine_name]['number']
-        #
-        # return self.total_cost1

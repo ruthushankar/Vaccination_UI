@@ -12,8 +12,7 @@ class Agent():
         self.neighbours=[]
         self.restrict=False
         self.vaccination_state=None
-        self.inject=False
-        self.cost=None
+
 
         self.vaccination_hist=[]
 
@@ -307,7 +306,7 @@ def main():
         available_vaccines['Vaccine'+str(i+1)]['capacity'] = quantity
     for type in available_vaccines:
         total_num_vaccines+=available_vaccines[type]['capacity']
-    st.write(total_num_vaccines)
+    # st.write(total_num_vaccines)
         # tc=tc+
     # for vaccine in available_vaccines:
     #     tc=tc+ available_vaccines[vaccine]['cost']* available_vaccines[vaccine]['capacity']
