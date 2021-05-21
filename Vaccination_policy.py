@@ -86,7 +86,7 @@ class Vaccination_policy():
                 # self.total_cost+=(vaccine_obj.vaccine_cost* self.available_vaccines[name]['number'])
                 self.total_cost=(vaccine_obj.vaccine_cost* self.available_vaccines[name]['number'])
                 self.vaccines.append(vaccine_obj)
-                self.cumulative_cost+=self.total_cost
+            self.cumulative_cost+=self.total_cost
 
         # return self.total_cost
         return self.cumulative_cost
