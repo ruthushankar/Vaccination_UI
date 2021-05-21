@@ -4,12 +4,13 @@ from functools import partial
 
 
 class Result():
-    def __init__(self,vaccine_name,agent,result,time_step,efficacy,decay_days):
+    def __init__(self,vaccine_name,agent,result,time_step,efficacy,decay_days,vaccine_cost):
         self.vaccine_name=vaccine_name
         self.agent=agent
         self.result=result
         self.time_stamp=time_step
         self.protection= decay_days
+        self.vaccine_cost=vaccine_cost
 
 
 class Vaccine_type():
@@ -20,13 +21,17 @@ class Vaccine_type():
         self.decay_days=decay
         self.efficacy=efficacy
         self.total=0
+        self.cost_fin=0
 
 
     def vaccinate(self,agent,time_step):
 
         # vaccinate agents
+
         result=self.inject_agent(agent)
-        result_obj= Result(self.vaccine_name,agent,result,time_step,self.efficacy,self.decay_days)
+        result_obj= Result(self.vaccine_name,agent,result,time_step,self.efficacy,self.decay_days,self.vaccine_cost)
+        # cost_fin+=result_obj.vaccine_cost
+
 
         return result_obj
 
@@ -34,9 +39,13 @@ class Vaccine_type():
     def inject_agent(self,agent):
 
         if (random.random()<self.efficacy):
+            agent.inject=True
+
             return 'Successful'
         else:
             return "Unsuccessful"
+
+
 
 
 class Vaccination_policy():
@@ -58,15 +67,17 @@ class Vaccination_policy():
 
     def enact_policy(self,time_step,agents):
 
-        self.total_cost1=self.newday(time_step)
+        # self.total_cost1=self.newday(time_step)
+        self.newday(time_step)
         self.set_protection(agents)
         fn=self.full_random_vaccines()
         fn(agents,time_step)
-        self.populate_results()
+        f_cost=self.populate_results()
         self.restrict_agents(agents)
         self.get_stats()
 
-        return self.total_cost1
+        # return self.total_cost1
+        return f_cost
 
 
 
@@ -90,19 +101,6 @@ class Vaccination_policy():
 
         # return self.total_cost
         return self.cumulative_cost
-
-        # for vaccine_name in self.available_vaccines.keys():
-        #     self.total_cost=self.total_cost+self.available_vaccines[vaccine_name]['parameters'][1]*self.available_vaccines[vaccine_name]['number']
-        #
-        # return self.total_cost
-
-    #
-    # def check_count(self):
-    #     self.total_cost=0
-    #     for vaccine_name in self.available_vaccines.keys():
-    #         self.total_cost=self.total_cost+self.available_vaccines[vaccine_name]['parameters'][1]*self.available_vaccines[vaccine_name]['number']
-    #
-    #     return self.total_cost
 
 
 
@@ -135,6 +133,7 @@ class Vaccination_policy():
                     self.vaccines.remove(current_vaccine)
                     curr_agents_to_vaccinate-=1
 
+
     def set_protection(self,agents):
         for agent in agents:
             # history= self.get_agent_policy_history(agent)
@@ -148,12 +147,17 @@ class Vaccination_policy():
 
 
     def populate_results(self):
+        self.costy1=0
         for result_obj in self.results:
             agent= result_obj.agent
+            costy=result_obj.vaccine_cost
+            self.costy1+=costy
             # self.update_agent_policy_history(agent,result_obj)
             agent.vaccination_hist.append(result_obj)
             # self.update_agent_policy_state(agent,result_obj.result)
             agent.vaccination_state=result_obj.result
+
+        return self.costy1
 
 
     def restrict_agents(self,agents):
