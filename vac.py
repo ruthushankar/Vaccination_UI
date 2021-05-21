@@ -12,6 +12,8 @@ class Agent():
         self.neighbours=[]
         self.restrict=False
         self.vaccination_state=None
+        self.inject=False
+        self.cost=None
 
         self.vaccination_hist=[]
 
@@ -291,7 +293,7 @@ def main():
     num_agents_per_step=st.sidebar.slider("Number of Agents to vaccinate every day", min_value=0 , max_value=1000 , value=100 , step=10 , format=None , key=None )
     num_vaccine_types=st.sidebar.slider("Number of distinct vaccines", min_value=0 , max_value=10 , value=1 , step=1 , format=None , key=None)
 
-    # tc=0
+    total_num_vaccines=0
     for i in range(num_vaccine_types):
         available_vaccines['Vaccine'+str(i+1)] = {}
         st.sidebar.text("Vaccine Type {0}".format(i+1))
@@ -303,6 +305,9 @@ def main():
         available_vaccines['Vaccine'+str(i+1)]['decay_days'] = decay
         available_vaccines['Vaccine'+str(i+1)]['efficacy'] = efficacy
         available_vaccines['Vaccine'+str(i+1)]['capacity'] = quantity
+    for type in available_vaccines:
+        total_num_vaccines+=available_vaccines[type]['capacity']
+    st.write(total_num_vaccines)
         # tc=tc+
     # for vaccine in available_vaccines:
     #     tc=tc+ available_vaccines[vaccine]['cost']* available_vaccines[vaccine]['capacity']
